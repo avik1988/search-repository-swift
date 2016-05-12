@@ -20,6 +20,8 @@ public class SwiftBlobStore extends AbstractComponent implements BlobStore {
 
     // Our Swift container. This is important.
     private final Container swift;
+    
+  
 
     /**
      * Constructor. Sets up the container mostly.
@@ -30,7 +32,6 @@ public class SwiftBlobStore extends AbstractComponent implements BlobStore {
     public SwiftBlobStore(Settings settings, Account auth, String container) {
         super(settings);
         this.bufferSizeInBytes = (int)settings.getAsBytesSize("buffer_size", new ByteSizeValue(100, ByteSizeUnit.KB)).bytes();
-
         swift = auth.getContainer(container);
         if (!swift.exists()) {
             swift.create();
@@ -38,6 +39,18 @@ public class SwiftBlobStore extends AbstractComponent implements BlobStore {
         }
     }
 
+    public boolean copyblobStorage(String sourceblob,String destinationblob){
+    	StoredObject sourceObject = swift.getObject(sourceblob);
+    	if(sourceObject.exists()){
+    		StoredObject newObject = swift.getObject(destinationblob);
+        	sourceObject.copyObject(swift, newObject);
+        	sourceObject.delete();
+        	return true;
+    	}
+    	return false;
+    }
+    
+    
     /**
      * Get the container
      */
@@ -77,6 +90,9 @@ public class SwiftBlobStore extends AbstractComponent implements BlobStore {
         }
     }
 
+    
+  
+    
     /**
      * Close the store. No-op for us.
      */

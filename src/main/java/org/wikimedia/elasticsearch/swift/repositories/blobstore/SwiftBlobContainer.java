@@ -5,10 +5,13 @@ import org.elasticsearch.common.blobstore.BlobMetaData;
 import org.elasticsearch.common.blobstore.BlobPath;
 import org.elasticsearch.common.blobstore.support.AbstractBlobContainer;
 import org.elasticsearch.common.blobstore.support.PlainBlobMetaData;
-import org.elasticsearch.common.collect.ImmutableMap;
+import org.elasticsearch.common.bytes.BytesReference;
+import org.elasticsearch.common.io.Streams;
 import org.javaswift.joss.model.Directory;
 import org.javaswift.joss.model.DirectoryOrObject;
 import org.javaswift.joss.model.StoredObject;
+
+import com.google.common.collect.ImmutableMap;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -16,6 +19,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.net.URISyntaxException;
 import java.util.Collection;
 
 /**
@@ -56,12 +60,12 @@ public class SwiftBlobContainer extends AbstractBlobContainer {
      * @param blobName A blob to delete
      */
     @Override
-    public boolean deleteBlob(String blobName) throws IOException {
+    public void deleteBlob(String blobName) throws IOException {
         StoredObject object = blobStore.swift().getObject(buildKey(blobName));
-        if (object.exists()) {
-            object.delete();
-        }
-        return true;
+       if(object.exists()){
+    	   object.delete();
+    	   }
+       
     }
 
     /**
@@ -106,19 +110,7 @@ public class SwiftBlobContainer extends AbstractBlobContainer {
         return keyPath + blobName;
     }
 
-    /**
-     * Fetch a given blob into a BufferedInputStream
-     * @param blobName The blob name to read
-     */
-    @Override
-    public InputStream openInput(String blobName) throws IOException {
-        return new BufferedInputStream(
-            blobStore.swift().getObject(buildKey(blobName)).downloadObjectAsInputStream(),
-                blobStore.bufferSizeInBytes());
-    }
-
-    @Override
-    public OutputStream createOutput(final String blobName) throws IOException {
+   private OutputStream createOutput(final String blobName) throws IOException {
        // need to remove old file if already exist
        deleteBlob(blobName);
 
@@ -145,4 +137,44 @@ public class SwiftBlobContainer extends AbstractBlobContainer {
            }
        };
     }
+
+	@Override
+	public void move(String sourceBlobname, String destinationBlobname) throws IOException {
+		
+		String source = buildKey(sourceBlobname);
+		  String target =  buildKey(destinationBlobname);
+		  //Loggers..debug("moving blob [{}] to [{}] in container {{}}", source, target, blobStore.blobContainer(new BlobPath().add(target)));
+		  if(blobExists(sourceBlobname)){
+			  //move
+			  blobStore.copyblobStorage(source, target);
+		  }
+		
+	}
+
+	 /**
+     * Fetch a given blob into a BufferedInputStream
+     * @param blobName The blob name to read
+     */
+	@Override
+	public InputStream readBlob(String blobName) throws IOException {
+		return new BufferedInputStream(
+	            blobStore.swift().getObject(buildKey(blobName)).downloadObjectAsInputStream(),
+	                blobStore.bufferSizeInBytes());
+	}
+
+	@Override
+	public void writeBlob(String blobName, BytesReference bytes) throws IOException {
+		 try (OutputStream stream = createOutput(blobName)) {
+	            bytes.writeTo(stream);
+	        }
+		
+	}
+
+	@Override
+	public void writeBlob(String blobName, InputStream in, long blobSize) throws IOException {
+		try (OutputStream  stream = createOutput(blobName)){
+			Streams.copy(in, stream);
+		}
+	      
+	}
 }

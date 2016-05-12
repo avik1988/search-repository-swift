@@ -66,9 +66,8 @@ public class SwiftRepository extends BlobStoreRepository {
 
         blobStore = new SwiftBlobStore(settings, account, container);
 
-        this.chunkSize = repositorySettings.settings().getAsBytesSize("chunk_size",
-                componentSettings.getAsBytesSize("chunk_size", new ByteSizeValue(5, ByteSizeUnit.GB)));
-        this.compress = repositorySettings.settings().getAsBoolean("compress", componentSettings.getAsBoolean("compress", false));
+        this.chunkSize = repositorySettings.settings().getAsBytesSize("chunk_size", new ByteSizeValue(5, ByteSizeUnit.GB));
+        this.compress = repositorySettings.settings().getAsBoolean("compress", false);
         this.basePath = BlobPath.cleanPath();
     }
 

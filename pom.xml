@@ -29,8 +29,13 @@
     <developers>
         <developer>
             <id>demon</id>
-            <name>Avik Das</name>
+            <name>Chad Horohoe</name>
             <email>chad@wikimedia.org</email>
+            <timezone>America/Los Angeles</timezone>
+        </developer>
+        <developer>
+            <name>Avik Das</name>
+            <email>avdas@syr.edu</email>
             <timezone>America/Los Angeles</timezone>
         </developer>
     </developers>
@@ -38,6 +43,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <elasticsearch.version>2.1.1</elasticsearch.version>
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.7</maven.compiler.source>
     </properties>
 
     <dependencies>
@@ -83,17 +90,36 @@
 
     <build>
          <plugins>
-           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>2.3.2</version>
-            <configuration>
-                 <compilerVersion>1.8</compilerVersion>
-                 <source>1.8</source>
-                 <target>1.8</target>
-            </configuration>
-        </plugin>
-        <plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                     <source>${maven.compiler.source}</source>
+                     <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>2.4.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.5</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.3.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.2</version>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>2.1.2</version>
@@ -110,8 +136,8 @@
             <artifactId>maven-assembly-plugin</artifactId>
             <version>2.5.1</version>
             <configuration>
-                <source>1.8</source>
-                <target>1.8</target>
+                <source>${maven.compiler.source}</source>
+                <target>${maven.compiler.target}</target>
                 <appendAssemblyId>false</appendAssemblyId>
                 <outputDirectory>${project.build.directory}/releases/</outputDirectory>
                 <descriptors>

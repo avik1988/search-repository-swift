@@ -1,6 +1,5 @@
 package org.wikimedia.elasticsearch.swift;
 
-
 import org.elasticsearch.common.component.LifecycleComponent;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.snapshots.blobstore.BlobStoreIndexShardRepository;
@@ -55,16 +54,14 @@ public class SwiftRepositoryPlugin extends Plugin  {
         }
         return services;
     }
-    
   
     /**
      * Load our repository module into the list, if enabled
      * @param repositoriesModule The repositories module to register ourselves with
      */
-   
-	public void onModule(RepositoriesModule repositoriesModule) {
+    public void onModule(RepositoriesModule repositoriesModule) {
         if (settings.getAsBoolean("swift.repository.enabled", true)) {
-        	repositoriesModule.registerRepository(SwiftRepository.TYPE, SwiftRepository.class, BlobStoreIndexShardRepository.class);
+            repositoriesModule.registerRepository(SwiftRepository.TYPE, SwiftRepository.class, BlobStoreIndexShardRepository.class);
         }
     }
 }

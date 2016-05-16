@@ -28,7 +28,7 @@ were buggy and are not recommended.
     }'
 ```
 
-See [Snapshot And Restore](http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/modules-snapshots.html) for more information
+See [Snapshot And Restore](https://www.elastic.co/guide/en/elasticsearch/reference/2.x/setup-repositories.html) for more information
 
 
 ## Settings

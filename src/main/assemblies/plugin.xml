@@ -7,7 +7,7 @@
     <includeBaseDirectory>false</includeBaseDirectory>
     <files>
         <file>
-            <source>/root/search-repository-swift/src/main/resources/plugin-descriptor.properties</source>
+            <source>${project.basedir}/src/main/resources/plugin-descriptor.properties</source>
             <outputDirectory>/</outputDirectory>
             <filtered>true</filtered>
         </file>
